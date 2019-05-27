@@ -16,7 +16,7 @@ namespace ProductAPI.Tests
 		}
 
 		 [Fact]
-		 public void ProductGet_WhenProducts_ReturnsAllProducts()
+		 public void ProductGet_WhenProductsGot_ReturnsAllProducts()
 		{
 			const int ITEMCOUNT = 6;
 			_service = new FakeProductService(ITEMCOUNT);
@@ -45,20 +45,56 @@ namespace ProductAPI.Tests
 		}
 
 		[Fact]
-		public void ProductPost_WhenProductComplete_AddedToCache()
+		public void ProductPost_WhenProductComplete_AddedToCacheIncludingId()
 		{
 			var controller = new ProductsController(_service);
-			var product = new Product { Id = "4", Description = "Test Item 4!!!", Brand = "The Great Guys", Model = "Test" };
+			var product = new Product { Description = "Test Item 4!!!", Brand = "The Great Guys", Model = "Test" };
 
 			// Act
 			controller.Post(product);
 
 			// Assert
-			var result = _service.Cache.Single(p => p.Key == "4").Value;
+			var result = _service.Products.Single(p => p.Key == "4").Value;
 			Assert.Equal("4", result.Id);
 			Assert.Equal("Test Item 4!!!", result.Description);
 			Assert.Equal("The Great Guys", result.Brand);
 			Assert.Equal("Test", result.Model);
+		}
+
+		[Fact]
+		public void ProductPut_WhenUpdaingProduct_ProductUpdated()
+		{
+			var controller = new ProductsController(_service);
+
+			Product product = new Product
+			{
+				Id = "2",
+				Description = "Something new",
+				Brand = "Updated Brand",
+				Model = "Test"
+			};
+
+			controller.Put(product);
+
+			var updatedProduct = _service.Products.Single(p => p.Key == "2").Value;
+
+			Assert.Equal("Something new", updatedProduct.Description);
+			Assert.Equal("Updated Brand", updatedProduct.Brand);
+			Assert.Equal("Test", updatedProduct.Model);
+		}
+
+		[Fact]
+		public void ProductDelete_WhenProductDeleted_ProductIsDeleted()
+		{
+			const string IDTODELETE = "2";
+			int startingCount = _service.Products.Count;
+			var controller = new ProductsController(_service);
+			controller.Delete(IDTODELETE);
+
+			var result = _service.Products.FirstOrDefault(p => p.Key == IDTODELETE);
+
+			Assert.True(result.Value == null);
+			Assert.Equal(startingCount - 1, _service.Products.Count);
 		}
 	}
 }

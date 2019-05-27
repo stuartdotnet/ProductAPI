@@ -17,7 +17,7 @@ namespace ProductAPI.Tests
 			}
 		}
 
-		public ConcurrentDictionary<string, Product> Cache
+		public ConcurrentDictionary<string, Product> Products
 		{
 			get
 			{

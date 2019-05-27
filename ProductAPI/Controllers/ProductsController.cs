@@ -20,33 +20,37 @@ namespace ProductAPI.Controllers
 		[HttpGet]
         public IEnumerable<Product> Get()
         {
-			return _service.Cache.Select(p => p.Value);
+			return _service.Products.Select(p => p.Value);
         }
 
         // GET: Products/5
         [HttpGet("{id}", Name = "Get")]
         public Product Get(string id)
         {
-			return _service.Cache.SingleOrDefault(p => p.Key == id).Value;
+			return _service.Products.SingleOrDefault(p => p.Key == id).Value;
         }
 
-        // POST: Products
-        [HttpPost]
+		// POST: Products
+		[HttpPost]
         public void Post([FromBody] Product product)
         {
-			if (!_service.Cache.Any(p => p.Value.Id == product.Id))
+			if (!_service.Products.Any(p => p.Value.Id == product.Id))
 			{
-				_service.Cache.GetOrAdd(product.Id, product);
+				int lastProduct = _service.Products.Max(p => int.Parse(p.Key));
+				string newProductId = (lastProduct + 1).ToString();
+				product.Id = newProductId;
+				_service.Products.GetOrAdd(newProductId, product);
 			}
         }
 
         // PUT: Products/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] Product product)
+        [HttpPut]
+        public void Put([FromBody] Product product)
         {
-			if (!_service.Cache.Any(p => p.Value.Id == product.Id))
+			var productToUpdate = _service.Products.FirstOrDefault(p => p.Value.Id == product.Id).Value;
+			if (productToUpdate != null)
 			{
-				_service.Cache.GetOrAdd(product.Id, product);
+				_service.Products[product.Id] = product;
 			}
 		}
 
@@ -55,7 +59,7 @@ namespace ProductAPI.Controllers
         public void Delete(string id)
         {
 			Product product;
-			_service.Cache.Remove(id, out product);
+			_service.Products.Remove(id, out product);
 		}
     }
 }

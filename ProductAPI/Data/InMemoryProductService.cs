@@ -20,11 +20,11 @@ namespace ProductAPI.Data
 
 			foreach (Product product in products)
 			{
-				this.Cache.GetOrAdd(product.Id, product);
+				this.Products.GetOrAdd(product.Id, product);
 			}
 		}
 
-		public ConcurrentDictionary<string, Product> Cache
+		public ConcurrentDictionary<string, Product> Products
 		{
 			get
 			{

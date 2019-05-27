@@ -9,6 +9,6 @@ namespace ProductAPI.Data
 {
 	public interface IProductService
 	{
-		ConcurrentDictionary<string, Product> Cache { get; }
+		ConcurrentDictionary<string, Product> Products { get; }
 	}
 }
