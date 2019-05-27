@@ -1,8 +1,5 @@
-﻿using System;
-using Microsoft.AspNetCore;
+﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
-using ProductAPI.Data;
-using ProductAPI.Model;
 
 namespace ProductAPI
 {
