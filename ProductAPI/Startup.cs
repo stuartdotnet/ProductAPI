@@ -44,6 +44,7 @@ namespace ProductAPI
 				app.UseHsts();
 			}
 
+			app.UseHttpsRedirection();
 			app.UseAuthentication();
 			app.UseMvc();
 		}
