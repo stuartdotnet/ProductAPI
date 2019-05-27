@@ -54,7 +54,7 @@ namespace ProductAPI.Tests
 			controller.Post(product);
 
 			// Assert
-			var result = _service.Products.Single(p => p.Key == "4").Value;
+			var result = _service.Products.Single(p => p.Id == "4");
 			Assert.Equal("4", result.Id);
 			Assert.Equal("Test Item 4!!!", result.Description);
 			Assert.Equal("The Great Guys", result.Brand);
@@ -76,7 +76,7 @@ namespace ProductAPI.Tests
 
 			controller.Put(product);
 
-			var updatedProduct = _service.Products.Single(p => p.Key == "2").Value;
+			var updatedProduct = _service.Products.Single(p => p.Id == "2");
 
 			Assert.Equal("Something new", updatedProduct.Description);
 			Assert.Equal("Updated Brand", updatedProduct.Brand);
@@ -91,9 +91,9 @@ namespace ProductAPI.Tests
 			var controller = new ProductsController(_service);
 			controller.Delete(IDTODELETE);
 
-			var result = _service.Products.FirstOrDefault(p => p.Key == IDTODELETE);
+			var result = _service.Products.FirstOrDefault(p => p.Id == IDTODELETE);
 
-			Assert.True(result.Value == null);
+			Assert.True(result == null);
 			Assert.Equal(startingCount - 1, _service.Products.Count);
 		}
 	}

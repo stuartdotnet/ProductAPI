@@ -20,37 +20,42 @@ namespace ProductAPI.Controllers
 		[HttpGet]
         public IEnumerable<Product> Get()
         {
-			return _service.Products.Select(p => p.Value);
+			return _service.Products.Select(p => p);
         }
 
         // GET: Products/5
         [HttpGet("{id}", Name = "Get")]
         public Product Get(string id)
         {
-			return _service.Products.SingleOrDefault(p => p.Key == id).Value;
+			return _service.Products.SingleOrDefault(p => p.Id == id);
         }
 
 		// POST: Products
 		[HttpPost]
-        public void Post([FromBody] Product product)
+        public ActionResult Post([FromBody] Product product)
         {
-			if (!_service.Products.Any(p => p.Value.Id == product.Id))
+			if (!_service.Products.Any(p => p.Id == product.Id))
 			{
-				int lastProduct = _service.Products.Max(p => int.Parse(p.Key));
+				int lastProduct = _service.Products.Max(p => int.Parse(p.Id));
 				string newProductId = (lastProduct + 1).ToString();
 				product.Id = newProductId;
-				_service.Products.GetOrAdd(newProductId, product);
+				_service.Products.Add(product);
+				return Ok();
 			}
+			return new BadRequestObjectResult("Product already exists");
         }
 
         // PUT: Products/5
         [HttpPut]
         public void Put([FromBody] Product product)
         {
-			var productToUpdate = _service.Products.FirstOrDefault(p => p.Value.Id == product.Id).Value;
+			var productToUpdate = _service.Products.FirstOrDefault(p => p.Id == product.Id);
 			if (productToUpdate != null)
 			{
-				_service.Products[product.Id] = product;
+				int index;
+				int.TryParse(product.Id, out index);
+
+				_service.Products[_service.Products.IndexOf(productToUpdate)] = product;
 			}
 		}
 
@@ -58,8 +63,11 @@ namespace ProductAPI.Controllers
         [HttpDelete("{id}")]
         public void Delete(string id)
         {
-			Product product;
-			_service.Products.Remove(id, out product);
+			Product product = _service.Products.FirstOrDefault(p => p.Id == id);
+			if (product != null)
+			{
+				_service.Products.Remove(product);
+			}
 		}
     }
 }

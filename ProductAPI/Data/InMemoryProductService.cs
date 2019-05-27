@@ -1,11 +1,12 @@
 ﻿using ProductAPI.Model;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 
 namespace ProductAPI.Data
 {
 	public class InMemoryProductService : IProductService
 	{
-		private static ConcurrentDictionary<string, Product> cache;
+		private static List<Product> cache;
 
 		private static object cacheLock = new object();
 
@@ -20,11 +21,11 @@ namespace ProductAPI.Data
 
 			foreach (Product product in products)
 			{
-				this.Products.GetOrAdd(product.Id, product);
+				this.Products.Add(product);
 			}
 		}
 
-		public ConcurrentDictionary<string, Product> Products
+		public List<Product> Products
 		{
 			get
 			{
@@ -32,7 +33,7 @@ namespace ProductAPI.Data
 				{
 					if (cache == null)
 					{
-						cache = new ConcurrentDictionary<string, Product>();
+						cache = new List<Product>();
 					}
 					return cache;
 				}
