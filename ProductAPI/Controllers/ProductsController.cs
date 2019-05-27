@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ProductAPI.Data;
 using ProductAPI.Model;
@@ -59,8 +60,9 @@ namespace ProductAPI.Controllers
 			}
 		}
 
-        // DELETE: Products/5
-        [HttpDelete("{id}")]
+		// DELETE: Products/5
+		[Authorize]
+		[HttpDelete("{id}")]
         public void Delete(string id)
         {
 			Product product = _service.Products.FirstOrDefault(p => p.Id == id);
