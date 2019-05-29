@@ -53,9 +53,6 @@ namespace ProductAPI.Controllers
 			var productToUpdate = _service.Products.FirstOrDefault(p => p.Id == product.Id);
 			if (productToUpdate != null)
 			{
-				int index;
-				int.TryParse(product.Id, out index);
-
 				_service.Products[_service.Products.IndexOf(productToUpdate)] = product;
 			}
 		}
