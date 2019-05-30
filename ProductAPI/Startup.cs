@@ -1,9 +1,14 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNet.OData.Builder;
+using Microsoft.AspNet.OData.Extensions;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.OData.Edm;
 using ProductAPI.Data;
+using ProductAPI.Model;
+using System.Net.Http;
 
 namespace ProductAPI
 {
@@ -19,7 +24,8 @@ namespace ProductAPI
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
-			services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+			services.AddOData();
+			services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1); // Has to be 2.1 for now, see https://github.com/Microsoft/aspnet-api-versioning/issues/361
 			services.AddSingleton<IProductService, InMemoryProductService>();
 		}
 
@@ -38,7 +44,18 @@ namespace ProductAPI
 
 			app.UseHttpsRedirection();
 			app.UseAuthentication();
-			app.UseMvc();
+			app.UseMvc(b =>
+			{
+				b.Select().Expand().Filter().OrderBy().MaxTop(5).Count();
+				b.MapODataServiceRoute("odata", "odata", GetEdmModel());
+			});
+		}
+
+		private static IEdmModel GetEdmModel()
+		{
+			ODataConventionModelBuilder builder = new ODataConventionModelBuilder();
+			builder.EntitySet<Product>("Products");
+			return builder.GetEdmModel();
 		}
 	}
 }

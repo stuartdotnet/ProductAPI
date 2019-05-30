@@ -58,19 +58,19 @@ namespace ProductAPI
 				};
 				//extract and assign the user of the jwt
 				Thread.CurrentPrincipal = handler.ValidateToken(token, validationParameters, out securityToken);
-				HttpContext.Current.User = handler.ValidateToken(token, validationParameters, out securityToken);
+			//	HttpContext.Current.User = handler.ValidateToken(token, validationParameters, out securityToken);
 
 				return base.SendAsync(request, cancellationToken);
 			}
-			catch (SecurityTokenValidationException e)
+			catch (SecurityTokenValidationException)
 			{
 				statusCode = HttpStatusCode.Unauthorized;
 			}
-			catch (Exception ex)
+			catch (Exception)
 			{
 				statusCode = HttpStatusCode.InternalServerError;
 			}
-			return Task<HttpResponseMessage>.Factory.StartNew(() => new HttpResponseMessage(statusCode) { });
+			return Task<HttpResponseMessage>.Factory.StartNew(() => new HttpResponseMessage(statusCode));
 		}
 
 		public bool LifetimeValidator(DateTime? notBefore, DateTime? expires, SecurityToken securityToken, TokenValidationParameters validationParameters)
