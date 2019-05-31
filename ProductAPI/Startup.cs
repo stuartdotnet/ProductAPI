@@ -46,6 +46,7 @@ namespace ProductAPI
 			app.UseAuthentication();
 			app.UseMvc(b =>
 			{
+				b.EnableDependencyInjection();
 				b.Select().Expand().Filter().OrderBy().MaxTop(5).Count();
 				b.MapODataServiceRoute("odata", "odata", GetEdmModel());
 			});
