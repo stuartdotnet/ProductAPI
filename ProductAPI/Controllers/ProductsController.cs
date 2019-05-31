@@ -18,7 +18,7 @@ namespace ProductAPI.Controllers
 			_service = service;
 		}
 
-		// GET: Products or odata/Products
+		// GET: Products
 		[HttpGet]
 		[EnableQuery]
 		public IEnumerable<Product> Get()
