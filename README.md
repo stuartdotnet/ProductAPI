@@ -11,4 +11,19 @@ From the ProductAPI folder, run the following commands:
 - dotnet publish -c release -r win10-x64
 - dotnet run
 
-The site should run at http://localhost:5000.
+## Get a token
+Hit https://localhost:44301/token with a POST action and use the following query parameters:
+
+username = test
+password = test
+
+This will return a JWT which you can use to authenticate against the products controller. 
+
+## Send GET to /products with Bearer token
+
+Send GET request to https://localhost:44301/products with the following header:
+Authorization = "Bearer <YOUR TOKEN>"
+  
+## Use ODATA to filter and sort data
+
+Use standard ODATA commands to get the data you need, eg https://localhost:44301/products?$select=brand
