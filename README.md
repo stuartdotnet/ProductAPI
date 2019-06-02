@@ -22,7 +22,7 @@ This will return a JWT which you can use to authenticate against the products co
 ## Send GET to /products with Bearer token
 
 Send GET request to https://localhost:44301/products with the following header:
-Authorization = "Bearer <YOUR TOKEN>"
+Authorization = "Bearer [YOUR TOKEN]"
   
 ## Use ODATA to filter and sort data
 
